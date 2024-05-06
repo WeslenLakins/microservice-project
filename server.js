@@ -34,6 +34,7 @@ app.get("/api/timestamp/:dateParam", function (req, res) {
 
 // Catch-all route to handle client-side routing
 app.get("*", function (req, res) {
+	console.log("Catch-all route");
 	res.sendFile(`${__dirname}/views/index.html`);
 });
 
