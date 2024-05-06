@@ -8,12 +8,12 @@ app.use(express.static("public"));
 
 // Catch-All Route
 app.get("*", function (req, res) {
-	res.sendFile(`${__dirname}/views/index.html`);
+	res.sendFile(`${__dirname}/public/index.html`);
 });
 
 // 404 Route
 app.use(function (req, res, next) {
-	res.status(404).sendFile(`${__dirname}/views/404.html`);
+	res.status(404).sendFile(`${__dirname}/public/404.html`);
 });
 
 // Listening for requests
