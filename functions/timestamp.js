@@ -1,40 +1,39 @@
-exports.handler = async function (event) {
-	let dateParam = event.queryStringParameters.dateParam || null;
+const express = require("express");
+const serverless = require("serverless-http");
+const app = express();
+const router = express.Router();
 
-	// Easter egg endpoint
-	if (event.path === "/api/easteregg") {
-		return {
-			statusCode: 200,
-			body: JSON.stringify({
-				greeting: "Oh, you've found this! Well, congrats! :p",
-			}),
-		};
-	}
+// Current timestamp endpoint
+router.get("/timestamp", (req, res) => {
+	const date = new Date();
+	res.json({
+		unix: date.valueOf(),
+		utc: date.toUTCString(),
+	});
+});
 
-	// Timestamp without parameter
-	if (dateParam === null) {
-		const date = new Date();
-		return {
-			statusCode: 200,
-			body: JSON.stringify({ unix: date.valueOf(), utc: date.toUTCString() }),
-		};
-	}
-
-	// Timestamp with parameter
+// Specific date timestamp endpoint
+router.get("/timestamp/:dateParam", (req, res) => {
+	let dateParam = req.params.dateParam;
 	if (/^\d{5,}$/.test(dateParam)) {
 		dateParam = parseInt(dateParam);
 	}
-
 	const date = new Date(dateParam);
 	if (date.toString() === "Invalid Date") {
-		return {
-			statusCode: 400,
-			body: JSON.stringify({ error: "Invalid Date" }),
-		};
+		res.json({ error: "Invalid Date" });
 	} else {
-		return {
-			statusCode: 200,
-			body: JSON.stringify({ unix: date.valueOf(), utc: date.toUTCString() }),
-		};
+		res.json({
+			unix: date.valueOf(),
+			utc: date.toUTCString(),
+		});
 	}
-};
+});
+
+// Easter egg endpoint
+router.get("/easteregg", (req, res) => {
+	res.json({ greeting: "Oh, you've found this! Well, congrats! :p" });
+});
+
+app.use("/api", router);
+
+module.exports.handler = serverless(app);

@@ -1,19 +1,22 @@
 const express = require("express");
 const app = express();
-
-const cors = require("cors");
-app.use(cors({ optionsSuccessStatus: 200 }));
+const path = require("path");
 
 app.use(express.static("public"));
 
-// Catch-All Route
-app.get("*", function (req, res) {
-	res.sendFile(`${__dirname}/public/index.html`);
+// Routing
+app.get("/", function (req, res) {
+	res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 404 Route
+// Catch-all route to handle client-side routing
+app.get("*", function (req, res) {
+	res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// No matching API route
 app.use(function (req, res, next) {
-	res.status(404).sendFile(`${__dirname}/public/404.html`);
+	res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
 });
 
 // Listening for requests
