@@ -3,12 +3,27 @@ const serverless = require("serverless-http");
 const app = express();
 const router = express.Router();
 
+// Helper function to format a date in EST
+function formatDateToEST(date) {
+	return new Intl.DateTimeFormat("en-US", {
+		timeZone: "America/New_York",
+		hour12: false,
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	}).format(date);
+}
+
 // Current timestamp endpoint
 router.get("/timestamp", (req, res) => {
 	const date = new Date();
 	res.json({
 		unix: date.valueOf(),
 		utc: date.toUTCString(),
+		est: formatDateToEST(date),
 	});
 });
 
@@ -25,6 +40,7 @@ router.get("/timestamp/:dateParam", (req, res) => {
 		res.json({
 			unix: date.valueOf(),
 			utc: date.toUTCString(),
+			est: formatDateToEST(date),
 		});
 	}
 });
